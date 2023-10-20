@@ -19,7 +19,7 @@ class Graph:
         cnt = 0
         top_order = []
         while queue:
-            u = queue.pop(0)
+            u = queue.pop()
             top_order.append(u)
             for i in self.g[u]:
                 indegree[i-1]-=1
