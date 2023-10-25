@@ -1,20 +1,41 @@
-def path(i, j, n, m, grid, ans, dir):
-    if i<0 or j<0 or i>=n or j>=m:
-        return
-    if grid[i][j]=='#':
-        return
-    else:
-        
-def solve(i, j, n, m, grid):
-    ans = []
-    if i-1>=0:
-        p
+def path(grid, y, x):
+    res = []
+    while y!=0 and x!=0:
+        if grid[y-1][x] == 'V':
+            res.append('U')
+        elif grid[y][x+1] == 'V':
+            res.append('R')
+        elif grid[y][x-1]=='V':
+            res.append('L')
+        elif grid[y+1][x] == 'V':
+            res.append('D')
+    return ''.join(res)
+
+
+def solve(grid):
+    queue = [(0, 0)]
+    grid[0][0]='V'
+    while queue:
+        (y, x) = queue.pop(0)
+        if grid[y][x] == 'B':
+            return True, path(grid, y, x)
+        for dy, dx in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+            ny, nx = y+dy, x+dx
+            grid[ny][nx] = 'V'
+            if 0<=ny<len(grid) and 0<=nx<=len(grid[0]) and grid[ny][nx]!='#' and grid[ny][nx]!='V':
+                queue.append((ny, nx))
+    return False, None        
+
+
 
 n, m = map(int, input().split())
 grid = []
 for _ in range(n):
     grid.append(list(input()))
-for i in range(n):
-    for j in range(m):
-        if grid[i][j]=='A':
-            res = solve(i, j, n, m, grid)
+res, ans = solve(grid)
+if res:
+    print('YES')
+    print(len(ans))
+    print(ans)
+else:
+    print('NO')

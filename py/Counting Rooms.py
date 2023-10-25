@@ -1,18 +1,17 @@
-def makeWall(i, j, n, m, grid, visited): 
-    if grid[i][j] == '#':
+def makeWall(i, j, n, m, grid, visited):
+    queue = [(i, j)]
+    while queue:
+        (i, j) = queue.pop()
         visited[i][j]=True
-        return
-    else:
         grid[i][j]='#'
-        visited[i][j]=True
-        if i-1>=0 and not visited[i-1][j]:
-            makeWall(i-1, j, n, m, grid, visited)
-        if i+1<n and not visited[i+1][j]:
-            makeWall(i+1, j, n, m, grid, visited)
-        if j-1>=0 and not visited[i][j-1]:
-            makeWall(i, j-1, n, m, grid, visited)
-        if j+1<m and not visited[i][j+1]:
-            makeWall(i, j+1, n, m, grid, visited)
+        if i-1>=0 and not visited[i-1][j] and grid[i-1][j]=='.':
+            queue.append((i-1, j))
+        if i+1<n and not visited[i+1][j] and grid[i+1][j]=='.':
+            queue.append((i+1, j))
+        if j-1>=0 and not visited[i][j-1] and grid[i][j-1]=='.':
+            queue.append((i, j-1))
+        if j+1<m and not visited[i][j+1] and grid[i][j+1]=='.':
+            queue.append((i, j+1))
 
 def heler(grid):
     if len(grid)==0:
@@ -23,11 +22,12 @@ def heler(grid):
     visited = [[False for j in range(m)] for i in range(n)]
     for i in range(n):
         for j in range(m):
-            if grid[i][j]=='.':
-                ans += 1
-                makeWall(i, j, n, m, grid, visited)
-            else:
-                visited[i][j]=True
+            if not visited[i][j]:
+                if grid[i][j]=='.':
+                    ans += 1
+                    makeWall(i, j, n, m, grid, visited)
+                else:
+                    visited[i][j]=True
     return ans
 
 n, m = map(int, input().split())
