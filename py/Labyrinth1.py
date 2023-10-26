@@ -1,27 +1,39 @@
-def getPath(i, j, n, m, grid, visited, dir):
-    if i<0 or i==n or j<0 or j==m or visited[i][j]:
-        return 
-    if grid[i][j]=='#':
-        visited[i][j]=True
-        return 
-    if grid[i][j] == 'B':
-        return dir
-    if grid[i][j]!='#':
-        visited[i][j]=True
-        res = getPath(i-1, j, n, m, grid, visited, dir+'U')
-        if res:
-            return res
-        res = getPath(i+1, j, n, m, grid, visited, dir+'D')
-        if res:
-            return res
-        res = getPath(i, j-1, n, m, grid, visited, dir+'L')
-        if res:
-            return res
-        res = getPath(i, j+1, n, m, grid, visited, dir+'R')
-        if res:
-            return res
-        return
+class QItem:
+    def __init__(self, i, j, path, dist):
+        self.i = i
+        self.j = j
+        self.path = path
+        self.dist = dist
 
+def isValid(x, y, grid, visited):
+    if ((x >= 0 and y >= 0) and
+        (x < len(grid) and y < len(grid[0])) and
+            (grid[x][y] != '#') and (visited[x][y] == False)):
+        return True
+    return False
+
+def getPath(A, grid):
+    visited = [[False for _ in range(len(grid[0]))] for __ in range(len(grid))]
+    start = QItem(*A, '', 0)
+    queue = []
+    queue.append(start)
+    visited[start.i][start.j] = True
+    while queue:
+        source = queue.pop(0)
+        if grid[source.i][source.j]=='B':
+            return source.path
+        if isValid(source.i - 1, source.j, grid, visited):
+            queue.append(QItem(source.i - 1, source.j, source.path+'U', source.dist + 1))
+            visited[source.i - 1][source.j] = True
+        if isValid(source.i + 1, source.j, grid, visited):
+            queue.append(QItem(source.i + 1, source.j, source.path+'D', source.dist + 1))
+            visited[source.i + 1][source.j] = True
+        if isValid(source.i, source.j - 1, grid, visited):
+            queue.append(QItem(source.i, source.j - 1, source.path+'L', source.dist + 1))
+            visited[source.i][source.j - 1] = True
+        if isValid(source.i, source.j + 1, grid, visited):
+            queue.append(QItem(source.i, source.j + 1, source.path+'R', source.dist + 1))
+            visited[source.i][source.j + 1] = True
 
 def solve(grid):
     n = len(grid)
@@ -30,7 +42,7 @@ def solve(grid):
     for i in range(n):
         for j in range(m):
             if grid[i][j] == 'A':
-                return getPath(i, j, n, m, grid, visited, '')
+                return getPath((i, j), grid)
 
 n, m = map(int, input().split())
 grid = []
